@@ -1,0 +1,1119 @@
+<?xml version="1.0" ?>
+<openerp>
+	<data>
+	<record id="invoice_form_inherited" model="ir.ui.view">
+            <field name="name">account.invoice.form</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//notebook/page[@string='Invoice Lines']/field[@name='invoice_line']/tree[@string='Invoice Lines']/field[@name='name']" position="after">
+                            <field name="rate_cal"/>
+                            <field name="estimate_id" invisible="1"/>
+                </xpath>
+            </field>
+     </record>
+	
+	<record id="email_template_edi_inv" model="email.template"> 
+            <field name="name">Invoice - Send by Email</field>
+            <field name="email_from">${(object.user_id.email or object.company_id.email or 'noreply@localhost')|safe}</field>
+            <field name="subject">${object.company_id.name|safe} Invoice (Ref ${object.number or 'n/a'})</field>
+            <field name="partner_to">${object.partner_id.id}</field>
+            <field name="model_id" ref="account.model_account_invoice"/>
+            <field name="auto_delete" eval="True"/>
+            <field name="report_template" ref="report_account_invoices"/>
+            <field name="report_name">Invoice_${(object.number or '').replace('/','_')}_${object.state == 'draft' and 'draft' or ''}</field>
+            <field name="lang">${object.partner_id.lang}</field>
+            <field name="body_html"><![CDATA[
+	<div style="font-family: 'Lucica Grande', Ubuntu, Arial, Verdana, sans-serif; font-size: 12px; color: rgb(34, 34, 34); background-color: #FFF; ">
+
+    <p>Hello ${object.partner_id.name},</p> 
+
+    <p>A new invoice is available for you: </p>
+    
+    <p style="border-left: 1px solid #8e0000; margin-left: 30px;">
+       &nbsp;&nbsp;<strong>REFERENCES</strong><br />
+       &nbsp;&nbsp;Invoice number: <strong>${object.number}</strong><br />
+       &nbsp;&nbsp;Invoice total: <strong>${object.amount_total} ${object.currency_id.name}</strong><br />
+       &nbsp;&nbsp;Invoice date: ${object.date_invoice}<br />
+       % if object.origin:
+       &nbsp;&nbsp;Order reference: ${object.origin}<br />
+       % endif
+       % if object.user_id:
+       &nbsp;&nbsp;Your contact: <a href="mailto:${object.user_id.email or ''}?subject=Invoice%20${object.number}">${object.user_id.name}</a>
+       % endif
+    </p>  
+    
+    % if object.paypal_url:
+    <br/>
+    <p>It is also possible to directly pay with Paypal:</p>
+        <a style="margin-left: 120px;" href="${object.paypal_url}">
+            <img class="oe_edi_paypal_button" src="https://www.paypal.com/en_US/i/btn/btn_paynowCC_LG.gif"/>
+        </a>
+    % endif
+    
+    <br/>
+    <p>If you have any question, do not hesitate to contact us.</p>
+    <p>Thank you for choosing ${object.company_id.name or 'us'}!</p>
+    <br/>
+    <br/>
+    <div style="width: 375px; margin: 0px; padding: 0px; background-color: #8E0000; border-top-left-radius: 5px 5px; border-top-right-radius: 5px 5px; background-repeat: repeat no-repeat;">
+        <h3 style="margin: 0px; padding: 2px 14px; font-size: 12px; color: #DDD;">
+            <strong style="text-transform:uppercase;">${object.company_id.name}</strong></h3>
+    </div>
+    <div style="width: 347px; margin: 0px; padding: 5px 14px; line-height: 16px; background-color: #F2F2F2;">
+        <span style="color: #222; margin-bottom: 5px; display: block; ">
+        % if object.company_id.street:
+            ${object.company_id.street}<br/>
+        % endif
+        % if object.company_id.street2:
+            ${object.company_id.street2}<br/>
+        % endif
+        % if object.company_id.city or object.company_id.zip:
+            ${object.company_id.zip} ${object.company_id.city}<br/>
+        % endif
+        % if object.company_id.country_id:
+            ${object.company_id.state_id and ('%s, ' % object.company_id.state_id.name) or ''} ${object.company_id.country_id.name or ''}<br/>
+        % endif
+        </span>
+        % if object.company_id.phone:
+            <div style="margin-top: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px; ">
+                Phone:&nbsp; ${object.company_id.phone}
+            </div>
+        % endif
+        % if object.company_id.website:
+            <div>
+                Web :&nbsp;<a href="${object.company_id.website}">${object.company_id.website}</a>
+            </div>
+        %endif
+        <p></p>
+    </div> 
+</div>
+            ]]></field>         
+        </record> 
+		
+	<record id="email_template_edi_quote" model="email.template">
+            <field name="name">Sales Order - Send by Email</field>
+            <field name="email_from">${(object.user_id.email or '')|safe}</field>
+            <field name="subject">${object.company_id.name|safe} ${object.state in ('draft', 'sent') and 'Quotation' or 'Order'} (Ref ${object.name or 'n/a' })</field>
+            <field name="partner_to">${object.partner_invoice_id.id}</field>
+            <field name="model_id" ref="sale.model_sale_order"/>
+            <field name="auto_delete" eval="True"/>
+            <field name="report_template" ref="techsaga_crm.report_sale_quote"/>
+            <field name="report_name">${(object.name or '').replace('/','_')}_${object.state == 'draft' and 'draft' or ''}</field>
+            <field name="lang">${object.partner_id.lang}</field>
+            <field name="body_html"><![CDATA[
+	<div style="font-family: 'Lucica Grande', Ubuntu, Arial, Verdana, sans-serif; font-size: 12px; color: rgb(34, 34, 34); background-color: #FFF; ">
+
+    <p>Hello ${object.partner_id.name},</p>
+    
+    <p>Here is your ${object.state in ('draft', 'sent') and 'quotation' or 'order confirmation'} from ${object.company_id.name}: </p>
+
+    <p style="border-left: 1px solid #8e0000; margin-left: 30px;">
+       &nbsp;&nbsp;<strong>REFERENCES</strong><br />
+       &nbsp;&nbsp;Order number: <strong>${object.name}</strong><br />
+       &nbsp;&nbsp;Order total: <strong>${object.amount_total} ${object.pricelist_id.currency_id.name}</strong><br />
+       &nbsp;&nbsp;Order date: ${object.date_order}<br />
+       % if object.origin:
+       &nbsp;&nbsp;Order reference: ${object.origin}<br />
+       % endif
+       % if object.client_order_ref:
+       &nbsp;&nbsp;Your reference: ${object.client_order_ref}<br />
+       % endif
+       % if object.user_id:
+       &nbsp;&nbsp;Your contact: <a href="mailto:${object.user_id.email or ''}?subject=Order%20${object.name}">${object.user_id.name}</a>
+       % endif
+    </p>
+
+    % if object.paypal_url:
+    <br/>
+    <p>It is also possible to directly pay with Paypal:</p>
+        <a style="margin-left: 120px;" href="${object.paypal_url}">
+            <img class="oe_edi_paypal_button" src="https://www.paypal.com/en_US/i/btn/btn_paynowCC_LG.gif"/>
+        </a>
+    % endif
+
+    <br/>
+    <p>If you have any question, do not hesitate to contact us.</p>
+    <p>Thank you for choosing ${object.company_id.name or 'us'}!</p>
+    <br/>
+    <br/>
+    <div style="width: 375px; margin: 0px; padding: 0px; background-color: #8E0000; border-top-left-radius: 5px 5px; border-top-right-radius: 5px 5px; background-repeat: repeat no-repeat;">
+        <h3 style="margin: 0px; padding: 2px 14px; font-size: 12px; color: #DDD;">
+            <strong style="text-transform:uppercase;">${object.company_id.name}</strong></h3>
+    </div>
+    <div style="width: 347px; margin: 0px; padding: 5px 14px; line-height: 16px; background-color: #F2F2F2;">
+        <span style="color: #222; margin-bottom: 5px; display: block; ">
+        % if object.company_id.street:
+            ${object.company_id.street}<br/>
+        % endif
+        % if object.company_id.street2:
+            ${object.company_id.street2}<br/>
+        % endif
+        % if object.company_id.city or object.company_id.zip:
+            ${object.company_id.zip} ${object.company_id.city}<br/>
+        % endif
+        % if object.company_id.country_id:
+            ${object.company_id.state_id and ('%s, ' % object.company_id.state_id.name) or ''} ${object.company_id.country_id.name or ''}<br/>
+        % endif
+        </span>
+        % if object.company_id.phone:
+            <div style="margin-top: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px; ">
+                Phone:&nbsp; ${object.company_id.phone}
+            </div>
+        % endif
+        % if object.company_id.website:
+            <div>
+                Web :&nbsp;<a href="${object.company_id.website}">${object.company_id.website}</a>
+            </div>
+        %endif
+        <p></p>
+    </div>
+</div>
+            ]]></field>
+        </record> 
+		
+		<!--Change Quotation into Statement-->
+		
+
+  		<delete model="ir.actions.report.xml"
+                search="[('report_name','=','sale.report_saleorder')]" />
+  		
+		<delete model="ir.actions.report.xml"
+                search="[('report_name','=','account.report_invoice')]" /> 	
+			<!-- <report   
+            id="sale.report_sale_order"
+            string="Estimate / Order"
+            model="sale.order" 
+            report_type="qweb-pdf"
+            file="sale.report_saleorder" 
+            name="sale.report_saleorder"/> -->
+            	
+		
+					
+		<menuitem id="sale.menu_sale_quotations" string="Estimates"
+                action="sale.action_quotations" parent="base.menu_sales"
+                sequence="5"/>
+		
+		<record id="view_quotation_tree_inherit" model="ir.ui.view">
+            <field name="name">sale.order.tree</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_quotation_tree"/>
+            <field name="arch" type="xml">
+            	 <field name="name" position="replace">
+            	 	 <field name="name" string="Estimate Number"/>
+            	 </field>
+        	</field>
+        </record>
+            	
+     	<record id="sale.action_quotations" model="ir.actions.act_window">
+            <field name="name">Estimates</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order</field>
+            <field name="view_type">form</field>
+            <field name="view_id" ref="sale.view_quotation_tree"/>
+            <field name="view_mode">tree,form,calendar,graph</field>
+            <field name="context">{'search_default_my_sale_orders_filter': 1}</field>
+            <field name="domain">[('state','in',('draft','sent','cancel'))]</field>
+            <field name="search_view_id" ref="sale.view_sales_order_filter"/>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to create a estimate, the first step of a new sale.
+              </p><p>
+                Odoo will help you handle efficiently the complete sale flow:
+                from the estimate to the sales order, the
+                delivery, the invoicing and the payment collection.
+              </p><p>
+                The social feature helps you organize discussions on each sales
+                order, and allow your customers to keep track of the evolution
+                of the sales order.
+              </p>
+            </field>
+        </record>
+    
+     <!--   <record id="view_sales_order_filter_inherit" model="ir.ui.view">
+            <field name="name">sale.order.list.select.inherit</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_sales_order_filter"/>
+            <field name="arch" type="xml">
+            	<filter name="draft" position="replace">	
+        			<filter string="Estimates" name="draft" domain="[('state','in',('draft','sent'))]" help="Sales Order that haven't yet been confirmed"/>
+            	</filter>	
+            </field>
+        </record>
+        --> 
+        <record id="view_order_form_estimate" model="ir.ui.view">
+            <field name="name">sale.order.form.estimate</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+            	<field name="partner_id" position="after">
+            		<field name="ref_id" domain="[('parent_id','=',partner_id)]"/>
+            	</field>
+            	<button name="copy_quotation" position="replace">
+            		<button name="copy_quotation" states="cancel" string="New Copy of Estimate" type="object"/>
+            	</button>
+            	<button name="cancel" position="replace">
+            		<button name="cancel" states="draft,sent" string="Cancel Estimate" groups="base.group_user"/>
+            	</button>
+            	
+            	<label string="Quotation " position="replace" >
+            		<label string="Estimate " attrs="{'invisible': [('state','not in',('draft','sent'))]}"/>	
+            	</label>
+            	<!-- add field sq meter rate-->
+            	<field name="partner_id" position="after">
+            		<field name="sq_meter" invisible="1"/>
+        		</field>
+
+        		<!-- add field rate_cal in sale order line-->        		
+        		<xpath expr="//notebook/page[@string='Order Lines']/field[@name='order_line']/tree[@string='Sales Order Lines']/field[@name='name']" position="after">
+							<field name="rate_cal"/>
+							<field name="estimate_ids" invisible="1"/>
+				</xpath>
+        			
+            	<xpath expr="//notebook/page[@string='Order Lines']" position="after">
+                       <page string="Product Description">
+                           <field name="sale_estimate_line">
+                               <form string="Door Description Lines">
+                               <notebook string="Door">
+                                   <page string="Door Description">
+                                       <group>
+                                           <group>
+                                               <field name="remodel"/>
+                                               <field name="door_to"/> 
+                                               <field name="door_width"/>
+                                               <field name="door_height"/>
+                                               <field name="descip"/>
+                                               <field name="thresold"/>                                        
+                                           </group>
+                                           <group>
+                                               <field name="impact"/>
+                                               <field name="stock_custom"/>
+                                               <field name="swing"/>
+                                               <field name="adoor"/>
+                                               <field name="color" on_change="onchange_color(color)"/>
+                                               <field name="hdwr"/>                                        
+                                               <field name="new_color" attrs="{'invisible': [('color','!=','Other')]}"/>
+                                           </group>
+                                       </group>
+                                       <group>
+                                           <group>
+                                               <field name="shape"/>
+                                               <field name="bore"/>
+                                               <field name="jamb" on_change="onchange_jamb(jamb)"/>
+                                               <field name="new_jamb" attrs="{'invisible': [('jamb','!=','Other')]}"/>
+                                           </group>
+                                           <group>
+                                               <field name="glass"/>
+                                               <field name="o_glass"/>
+                                               <field name="inst_mount"/>
+                                               <field name="door_seq"/>
+                                           </group>
+                                          </group>
+                                        </page>
+                                        <page string="Transom">
+                                            <group>
+                                                <group>
+                                                    <field name="trans_arch"/>
+                                                    <field name="trans_height"/>
+                                                </group>
+                                                <group>
+                                                    <field name="trans_width"/>
+                                                    <field name="trans_seq"/>
+                                                </group>
+                                            </group>
+                                        </page>
+                                        <page string="Sidelights">
+                                            <group>
+                                                <group>
+                                                    <field name="side_arch"/>
+                                                    <field name="side_height"/>
+                                                </group>
+                                                <group>
+                                                    <field name="side_width"/>
+                                                    <field name="side_seq"/>
+                                                </group>
+                                            </group>
+                                        </page>
+                              </notebook>
+                           </form>
+                           <tree string="Estimate Lines">
+                               <field name="remodel"/>
+                               <field name="door_to"/> 
+                               <field name="door_width"/>
+                               <field name="door_height"/>
+                               <field name="descip"/>
+                           </tree>
+                       </field>
+                     </page>
+                     <page string="Old Door Description">
+                        <group>
+                            <group>
+                                <field name="remodel"/>
+                                <field name="door_to"/>
+                                <field name="door_width"/>
+                                <field name="door_height"/>
+                                <field name="descip"/>
+                                
+                                <field name="thresold"/>                                
+                            </group>
+                            <group>
+                                <field name="impact"/>
+                                <field name="stock_custom"/>
+                                <field name="swing"/>
+                                <field name="adoor"/>
+                                <field name="color" on_change="onchange_color(color)"/>
+                                <field name="hdwr"/>
+                                <field name="new_color" attrs="{'invisible': [('color','!=','Other')]}"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="shape"/>
+                                <field name="bore"/>
+                                <field name="jamb" on_change="onchange_jamb(jamb)"/>
+                                <field name="new_jamb" attrs="{'invisible': [('jamb','!=','Other')]}"/>
+                            </group>
+                            <group>
+                                <field name="glass"/>
+                                <field name="o_glass"/>
+                                <field name="inst_mount"/>
+                            </group>
+                        </group>
+                    </page>
+                    <page string="Old Transom">
+                        <group>
+                            <group>
+                                <field name="trans_arch"/>
+                                <field name="trans_height"/>
+                            </group>
+                            <group>
+                                <field name="trans_width"/>
+                            </group>
+                        </group>
+                    </page>
+                    <page string="Old Sidelights">
+                        <group>
+                            <group>
+                                <field name="side_arch"/>
+                                <field name="side_height"/>
+                            </group>
+                            <group>
+                                <field name="side_width"/>
+                            </group>
+                        </group>
+                    </page>
+				</xpath>	    
+    	    </field>
+        </record>
+        
+        <record id="view_partner_form_inherit" model="ir.ui.view">
+            <field name="name">res.partner.form</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+            	<label for="street" string="Address" position="before">
+            		<field name="full_name"/>
+            	</label>
+            	<xpath expr="//notebook/page[@name='sales_purchases']/group/group/field[@name='supplier']" position="after">
+            		<field name="cad_drawing"/>
+            	</xpath>
+            	<!-- add field sq meter rate in customer-->
+            	<field name="website" position="after">
+            		<field name="sq_meter"/>
+        		</field>
+            	
+			</field>
+		</record>
+		
+		<record model="ir.ui.view" id="crm_case_tree_view_leads_inherit">
+			<field name="name">Leads</field>
+			<field name="model">crm.lead</field>
+			<field name="inherit_id" ref="crm.crm_case_tree_view_leads"/>
+			<field name="arch" type="xml">
+				<field name="name" position="replace">
+					<field name="name" string="Name"/>
+				</field>
+				<field name="contact_name" position="replace">
+					<field name="contact_name" invisible="1"/>
+				</field>
+			</field>
+		</record>
+		
+		<!-- Inherit CRM Lead Form View  -->
+		<record model="ir.ui.view" id="crm.crm_case_form_view_leads">
+			<field name="name">CRM - Leads Form</field>
+			<field name="model">crm.lead</field>
+			<field name="arch" type="xml">
+				<form string="Leads Form">
+					<header>
+						<button name="%(crm.action_crm_lead2opportunity_partner)d" string="Convert to Opportunity"
+							type="action" help="Convert to Opportunity" class="oe_highlight"/>
+						<field name="stage_id" widget="statusbar" clickable="True" domain="['&amp;', '|',
+							('case_default', '=', True), ('section_ids', '=', section_id), '|', ('type',
+							'=', type), ('type', '=', 'both')]" options="{'fold_field': 'fold'}" on_change="onchange_stage_id(stage_id)"/>
+					</header>
+					<sheet>
+						<div class="oe_right oe_button_box" name="buttons">
+							<button class="oe_inline oe_stat_button" type="action" context="{'default_opportunity_id':
+								active_id, 'search_default_opportunity_id': active_id, 'default_partner_id':
+								partner_id, 'default_duration': 1.0}" name="%(crm.crm_case_categ_phone_incoming0)d"
+								icon="fa-phone">
+								<div>
+									Schedule/Log
+									<br/>
+									Calls
+								</div>
+							</button>
+						</div>
+						<div class="oe_title">
+							<label for="name" class="oe_edit_only" string="Name"/>
+							<h1>
+								<field name="name"/>
+							</h1>
+						</div>
+						<group>
+							<group>
+								<field name="partner_name" string="Company Name"/>
+								<!-- Preload all the partner's information -->
+								<field name="partner_id" string="Customer" on_change="on_change_partner_id(partner_id)"
+									options='{"create_name_field": "name"}' context="{'default_name': contact_name,
+									'default_street': street, 'default_city': city, 'default_state_id': state_id,
+									'default_zip': zip, 'default_country_id': country_id, 'default_function':
+									function, 'default_phone': phone, 'default_mobile': mobile, 'default_fax':
+									fax, 'default_email': email_from, 'default_user_id': user_id, 'default_section_id':
+									section_id}" /> 
+								<label for="street" string="Address"/>
+								<div>
+									<field name="street" placeholder="Street..."/>
+									<field name="street2"/>
+									<div class="address_format">
+										<field name="city" placeholder="City" style="width: 40%%"/>
+										<field name="state_id" on_change="onchange_state(state_id)" options='{"no_open": True}'
+											placeholder="State" style="width: 24%%"/>
+										<field name="zip" placeholder="ZIP" style="width: 34%%"/>
+									</div>
+									<field name="country_id" placeholder="Country" options='{"no_open": True}'/>
+								</div>
+							</group>
+							<group>
+								<field name="contact_name" invisible="1"/>
+								<field name="email_from" widget="email"/>
+								<field name="function"/>
+								<field name="phone"/>
+								<field name="mobile"/>
+								<field name="fax"/>
+								<field name="customer_ref"/>
+							</group>
+							<group>
+								<field name="user_id" on_change="on_change_user(user_id, context)" context="{'default_groups_ref':
+									['base.group_user', 'base.group_partner_manager', 'base.group_sale_salesman_all_leads']
+									}"/>
+								<field name="lead_status"/>
+								<label for="section_id" groups="base.group_multi_salesteams"/>
+								<div groups="base.group_multi_salesteams">
+									<field name="section_id"/>
+									<button name="case_escalate" string="Escalate" type="object" class="oe_link" attrs="{'invisible':
+										['|', ('section_id','=',False), ('probability', '=', 100)]}"/>
+								</div>
+								<field name="type" invisible="1"/>
+							</group>
+							<group>
+								<field name="priority" widget="priority" string="Lead Rating"/>
+								<field name="lead_source"/>
+								<field name="categ_ids" invisible="1" widget="many2many_tags" domain="[('object_id.model','=','crm.lead')]"
+									context="{'object_name': 'crm.lead'}"/>
+								<field name="cad_partner_email" invisible="1"/>
+							</group>
+						</group>
+						<notebook colspan="4">
+							<page string="Product Description">
+                                <field name="lead_line">
+	                                <form string="Door Description Lines">
+	                                <notebook string="Door">
+		                                <page string="Door Description">
+											<group>
+												<group>
+													<field name="remodel"/>
+													<field name="door_to"/>	
+													<field name="door_width"/>
+													<field name="door_height"/>
+													<field name="descip"/>
+													<field name="thresold"/>										
+												</group>
+												<group>
+													<field name="impact"/>
+													<field name="stock_custom"/>
+													<field name="swing"/>
+													<field name="adoor"/>
+													<field name="color" on_change="onchange_color(color)"/>
+													<field name="hdwr"/>										
+													<field name="new_color" attrs="{'invisible': [('color','!=','Other')]}"/>
+												</group>
+											</group>
+											<group>
+												<group>
+													<field name="shape"/>
+													<field name="bore"/>
+													<field name="jamb" on_change="onchange_jamb(jamb)"/>
+													<field name="new_jamb" attrs="{'invisible': [('jamb','!=','Other')]}"/>
+												</group>
+												<group>
+													<field name="glass"/>
+													<field name="o_glass"/>
+													<field name="inst_mount"/>
+													<field name="door_seq"/>
+												</group>
+											</group>
+										</page>
+									    <page string="Transom">
+	                                        <group>
+	                                            <group>
+	                                                <field name="trans_arch"/>
+	                                                <field name="trans_height"/>
+	                                            </group>
+	                                            <group>
+	                                                <field name="trans_width"/>
+	                                                <field name="trans_seq"/>
+	                                            </group>
+	                                        </group>
+	                                    </page>
+	                                    <page string="Sidelights">
+	                                        <group>
+	                                            <group>
+	                                                <field name="side_arch"/>
+	                                                <field name="side_height"/>
+	                                            </group>
+	                                            <group>
+	                                                <field name="side_width"/>
+	                                                <field name="side_seq"/>
+	                                            </group>
+	                                        </group>
+	                                    </page>
+                                   </notebook>
+								</form>
+								<tree string="Lead Lines">
+								    <field name="remodel"/>
+                                    <field name="door_to"/> 
+                                    <field name="door_width"/>
+                                    <field name="door_height"/>
+                                    <field name="descip"/>
+								</tree>
+							</field>
+							</page>
+							<page string="Old Door Description">
+	                        <group>
+	                            <group>
+	                                <field name="remodel"/>
+	                                <field name="door_to"/>
+	                                <field name="door_width"/>
+	                                <field name="door_height"/>
+	                                <field name="descip"/>
+	                                
+	                                <field name="thresold"/>                                
+	                            </group>
+	                            <group>
+	                                <field name="impact"/>
+	                                <field name="stock_custom"/>
+	                                <field name="swing"/>
+	                                <field name="adoor"/>
+	                                <field name="color" on_change="onchange_color(color)"/>
+	                                <field name="hdwr"/>
+	                                <field name="new_color" attrs="{'invisible': [('color','!=','Other')]}"/>
+	                            </group>
+	                        </group>
+	                        <group>
+	                            <group>
+	                                <field name="shape"/>
+	                                <field name="bore"/>
+	                                <field name="jamb" on_change="onchange_jamb(jamb)"/>
+	                                <field name="new_jamb" attrs="{'invisible': [('jamb','!=','Other')]}"/>
+	                            </group>
+	                            <group>
+	                                <field name="glass"/>
+	                                <field name="o_glass"/>
+	                                <field name="inst_mount"/>
+	                            </group>
+	                        </group>
+	                    </page>
+	                    <page string="Old Transom">
+	                        <group>
+	                            <group>
+	                                <field name="trans_arch"/>
+	                                <field name="trans_height"/>
+	                            </group>
+	                            <group>
+	                                <field name="trans_width"/>
+	                            </group>
+	                        </group>
+	                    </page>
+	                    <page string="Old Sidelights">
+	                        <group>
+	                            <group>
+	                                <field name="side_arch"/>
+	                                <field name="side_height"/>
+	                            </group>
+	                            <group>
+	                                <field name="side_width"/>
+	                            </group>
+	                        </group>
+	                    </page>
+							<page string="Visit Summary" invisible="1">
+								<group>
+									<group>
+										<field name="day_visit"/>
+										<field name="no_of_chart"/>
+										<field name="f_visit_time"/>
+										<field name="referrer"/>
+									</group>
+									<group>
+										<field name="time_spent"/>
+										<field name="lvisit_time"/>
+										<field name="fvisit_time"/>
+									</group>
+								</group>
+							</page>
+							<page string="Internal Notes">
+								<field name="description"/>
+							</page>
+							<page string="Extra Info" invisible="1">
+								<group>
+									<group string="Categorization" groups="base.group_multi_company,base.group_no_one"
+										name="categorization">
+										<field name="company_id" groups="base.group_multi_company" widget="selection"/>
+									</group>
+									<group string="Mailings">
+										<field name="opt_out"/>
+										<field name="message_bounce"/>
+									</group>
+									<group string="Misc">
+										<field name="probability" groups="base.group_no_one"/>
+										<field name="active"/>
+										<field name="referred"/>
+									</group>
+									<group>
+										<field name="date_open" groups="base.group_no_one"/>
+										<field name="date_closed" groups="base.group_no_one"/>
+									</group>
+								</group>
+							</page>
+						</notebook>
+					</sheet>
+					<div class="oe_chatter">
+						<field name="message_follower_ids" widget="mail_followers"/>
+						<field name="message_ids" widget="mail_thread"/>
+					</div>
+				</form>
+			</field>
+		</record>
+		
+		
+		<!-- Opportunities Form View -->
+		
+		<record id="crm_case_form_view_oppor_inherit" model="ir.ui.view">
+			<field name="name">crm.case.form.view.oppor.inherit</field>
+			<field name="model">crm.lead</field>
+			<field name="inherit_id" ref="crm.crm_case_form_view_oppor"/>
+			<field name="arch" type="xml">
+				<button name="case_mark_lost" position="after">
+					<button name="send_email_oppor" type="object" string="Request CAD drawing"/>
+				</button>
+                        
+				<label for="contact_name" position="replace">
+					<label for="contact_name" invisible="1"/>
+				</label>
+				<field name="contact_name" position="replace">
+					<field name="contact_name" invisible="1"/>
+				</field>
+				<field name="title" position="replace">
+					<field name="title" invisible="1"/>
+				</field>
+				
+				<label for="name" class="oe_edit_only" position="replace">
+					<label for="name" class="oe_edit_only" string="Name"/>
+				</label>
+				<field name="priority" widget="priority" position="replace">
+					<field name="priority" widget="priority" string="Lead Rating"/>
+				</field>
+				<field name="priority" position="after">
+					<field name="lead_source"/>
+					<field name="cad_partner_email" invisible="1"/>					
+				</field>
+				
+				<field name="categ_ids" widget="many2many_tags" domain="[('object_id.model','=','crm.lead')]"
+					context="{'object_name': 'crm.lead'}" position="replace">
+					<field name="categ_ids" widget="many2many_tags" invisible="1" domain="[('object_id.model','=','crm.lead')]"
+						context="{'object_name': 'crm.lead'}"/>
+				</field>
+				<field name="user_id" position="after">
+					<field name="lead_status"/>
+				</field>
+				
+				<xpath expr="//notebook/page[@string='Internal Notes']" position="before">
+                        <page string="Product Description">
+                            <field name="lead_line">
+                                <form string="Door Description Lines">
+                                <notebook string="Door">
+                                    <page string="Door Description">
+                                        <group>
+                                            <group>
+                                                <field name="remodel"/>
+                                                <field name="door_to"/> 
+                                                <field name="door_width"/>
+                                                <field name="door_height"/>
+                                                <field name="descip"/>
+                                                <field name="thresold"/>                                        
+                                            </group>
+                                            <group>
+                                                <field name="impact"/>
+                                                <field name="stock_custom"/>
+                                                <field name="swing"/>
+                                                <field name="adoor"/>
+                                                <field name="color" on_change="onchange_color(color)"/>
+                                                <field name="hdwr"/>                                        
+                                                <field name="new_color" attrs="{'invisible': [('color','!=','Other')]}"/>
+                                            </group>
+                                        </group>
+                                        <group>
+                                            <group>
+                                                <field name="shape"/>
+                                                <field name="bore"/>
+                                                <field name="jamb" on_change="onchange_jamb(jamb)"/>
+                                                <field name="new_jamb" attrs="{'invisible': [('jamb','!=','Other')]}"/>
+                                            </group>
+                                            <group>
+                                                <field name="glass"/>
+                                                <field name="o_glass"/>
+                                                <field name="inst_mount"/>
+                                                <field name="door_seq"/>
+                                            </group>
+                                         </group>
+                                        </page>
+                                        <page string="Transom">
+                                            <group>
+                                                <group>
+                                                    <field name="trans_arch"/>
+                                                    <field name="trans_height"/>
+                                                </group>
+                                                <group>
+                                                    <field name="trans_width"/>
+                                                    <field name="trans_seq"/>
+                                                </group>
+                                            </group>
+                                        </page>
+                                        <page string="Sidelights">
+                                            <group>
+                                                <group>
+                                                    <field name="side_arch"/>
+                                                    <field name="side_height"/>
+                                                </group>
+                                                <group>
+                                                    <field name="side_width"/>
+                                                    <field name="side_seq"/>
+                                                </group>
+                                            </group>
+                                        </page>
+                               </notebook>
+                            </form>
+                            <tree string="Lead Lines">
+                                <field name="remodel"/>
+                                <field name="door_to"/> 
+                                <field name="door_width"/>
+                                <field name="door_height"/>
+                                <field name="descip"/>
+                            </tree>
+                        </field>
+                    </page>
+                    <page string="Old Door Description">
+                        <group>
+                            <group>
+                                <field name="remodel"/>
+                                <field name="door_to"/>
+                                <field name="door_width"/>
+                                <field name="door_height"/>
+                                <field name="descip"/>
+                                
+                                <field name="thresold"/>                                
+                            </group>
+                            <group>
+                                <field name="impact"/>
+                                <field name="stock_custom"/>
+                                <field name="swing"/>
+                                <field name="adoor"/>
+                                <field name="color" on_change="onchange_color(color)"/>
+                                <field name="hdwr"/>
+                                <field name="new_color" attrs="{'invisible': [('color','!=','Other')]}"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="shape"/>
+                                <field name="bore"/>
+                                <field name="jamb" on_change="onchange_jamb(jamb)"/>
+                                <field name="new_jamb" attrs="{'invisible': [('jamb','!=','Other')]}"/>
+                            </group>
+                            <group>
+                                <field name="glass"/>
+                                <field name="o_glass"/>
+                                <field name="inst_mount"/>
+                            </group>
+                        </group>
+                    </page>
+                    <page string="Old Transom">
+                        <group>
+                            <group>
+                                <field name="trans_arch"/>
+                                <field name="trans_height"/>
+                            </group>
+                            <group>
+                                <field name="trans_width"/>
+                            </group>
+                        </group>
+                    </page>
+                    <page string="Old Sidelights">
+                        <group>
+                            <group>
+                                <field name="side_arch"/>
+                                <field name="side_height"/>
+                            </group>
+                            <group>
+                                <field name="side_width"/>
+                            </group>
+                        </group>
+                    </page>
+					<page string="Visit Summary" invisible="1">
+						<group>
+							<group>
+								<field name="day_visit"/>
+								<field name="no_of_chart"/>
+								<field name="f_visit_time"/>
+								<field name="referrer"/>
+							</group>
+							<group>
+								<field name="time_spent"/>
+								<field name="lvisit_time"/>
+								<field name="fvisit_time"/>
+							</group>
+						</group>
+					</page>
+					<page string="CAD Drawing">
+						<field name="attachment_ids" widget="many2many_binary" string="Attach a file"/>						
+						<field name="mail_msg"/>						
+					</page>
+				</xpath>
+			</field>
+		</record>
+		
+		<record id="crm_case_section_salesteams_kanban_inherit" model="ir.ui.view">
+            <field name="name">crm.case.section.kanban.inherit</field>
+            <field name="model">crm.case.section</field>
+            <field name="inherit_id" ref="sale.crm_case_section_salesteams_view_kanban"/>
+            <field name="arch" type="xml">
+            	<xpath expr="//field[@name='use_quotations']" position="replace">
+            		<field name="use_quotations" string="Statements"/>
+            	</xpath>
+			</field>
+		</record>
+		
+		<record id="email_template_oppor_mail" model="email.template">
+			<field name="name">Opportunity-Send by Email</field>
+            <field name="model_id" ref="crm.model_crm_lead"/>
+			<field name="auto_delete" eval="True"/>
+            <field name="email_from">${object.company_id.email}</field>
+            <field name="email_to">${object.cad_partner_email}</field>
+            <field name="subject">CAD Request</field>
+            <field name="body_html"><![CDATA[  
+		    
+		    <p>Name : 
+		    	${object.name}
+            </p>
+		    <p>
+		    	 % if object.mail_msg:
+				 ${object.mail_msg}
+             	 % endif 
+            </p>   
+		    % for line in object.lead_line:
+		    <p>    
+			   <b>Door Description</b><br/>
+            	New Construction or Remodel :
+            	% if not line.remodel:
+					None
+             	% endif           
+            	% if line.remodel: 
+            	${line.remodel}
+            	% endif 
+            	<br/>
+            	Impact or Non Impact : 
+            	% if not line.impact:
+					None
+             	% endif           
+            	% if line.impact: 
+            	${line.impact}
+            	% endif 	
+            	<br/>
+				Door Width (inches) : 
+            	% if line.door_width==0.0:
+					None
+             	% endif           
+            	% if line.door_width!=0.0: 
+            	${line.door_width}
+            	% endif
+              <br/>            	
+		       	Description : 
+            	% if line.descip: 
+					${line.descip}
+             	% endif
+              	<br/> 
+		       	Door Height (inches) : 
+            	% if line.door_height==0.0:
+					None
+             	% endif           
+            	% if line.door_height!=0.0: 
+            	${line.door_height}
+            	% endif
+            	<br/>    
+		       Shape : 
+				% if not line.shape:
+					None
+             	% endif           
+            	% if line.shape: 
+            	${line.shape}
+            	% endif            
+              <br/>
+		       Jamb : 
+            	% if not line.new_jamb:
+					None
+             	% endif           
+            	% if line.new_jamb: 
+            	${line.new_jamb}
+            	% endif  
+            	<br/>
+				Stock or Custom : 
+            	% if not line.stock_custom:
+					None
+             	% endif           
+            	% if line.stock_custom: 
+            	${line.stock_custom}
+            	% endif  
+            	<br/>
+              Swing :
+            	% if not line.swing:
+            		None
+            	% endif
+            	% if line.swing:
+            	${line.swing}
+            	% endif
+            	<br/>
+            	Bore :
+            	% if not line.bore:
+            		None
+            	% endif
+            	% if line.bore:
+            	${line.bore}
+            	% endif
+            	<br/>
+            	Glass :
+            	% if not line.glass:
+            		None
+            	% endif
+            	% if line.glass:
+            	${line.glass}
+            	% endif
+            	<br/>
+				Active Door : 
+            	% if not line.adoor:
+					None
+             	% endif           
+            	% if line.adoor: 
+            	${line.adoor}
+            	% endif 
+            	<br/>
+				Hardware :
+    			% if not line.hdwr:
+             		None
+             	%endif
+             	% if line.hdwr:
+            	${line.hdwr}
+            	% endif
+             	<br/>    
+	          	Color : 
+            	% if not line.new_color:
+					None
+             	% endif           
+            	% if line.new_color: 
+            	${line.new_color}
+            	% endif 
+            	<br/>
+				Operable Glass : 
+            	% if not line.o_glass:
+					None
+             	% endif           
+            	% if line.o_glass: 
+            	${line.o_glass}
+            	% endif 
+            	<br/>
+				Install Mount : 
+            	% if not line.inst_mount:
+					None
+             	% endif           
+            	% if line.inst_mount: 
+            	${line.inst_mount}
+            	% endif
+            	<br/>
+				<br/>	
+              <b>Transom</b><br/>
+		       Transom Arch : 
+            	% if not line.trans_arch:
+					None
+             	% endif           
+            	% if line.trans_arch: 
+            	${line.trans_arch}
+            	% endif 
+            	<br/>
+				Transom Width (inches) : 
+            	% if line.trans_width==0.0:
+					None
+             	% endif           
+            	% if line.trans_width!=0.0: 
+            	${line.trans_width}
+            	% endif
+              <br/>
+				Transom Height (inches) : 
+            	% if line.trans_height==0.0:
+					None
+             	% endif           
+            	% if line.trans_height!=0.0: 
+            	${line.trans_height}
+            	% endif
+            	<br/>
+				<br/>	
+              <b>Sidelights</b><br/>
+		       Sidelight Arch : 
+            	% if not line.side_arch:
+				None
+             	% endif           
+            	% if line.side_arch: 
+            	${line.side_arch}
+            	% endif 
+              <br/>
+				Sidelight Width (inches) : 
+              	% if line.side_width==0.0:
+					None
+             	% endif           
+            	% if line.side_width!=0.0: 
+            	${line.side_width}
+            	% endif
+              	<br/>
+				Sidelight Height (inches) :	
+              	% if line.side_height==0.0:
+					None
+             	% endif           
+            	% if line.side_height!=0.0: 
+            	${line.side_height}
+            	% endif
+              	<br/>       
+			 </p>
+			% endfor	 
+		]]></field>
+		</record>
+ 	</data>
+</openerp>

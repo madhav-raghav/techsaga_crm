@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <report 
+            id="report_sale_quote"
+            string="Custom Estimates/Order"
+            model="sale.order" 
+            report_type="qweb-pdf"
+            file="techsaga_crm.report_quote" 
+            name="techsaga_crm.report_salequote"/> 
+        
+
+     <report 
+            id="report_account_invoices"
+            model="account.invoice"
+            string="Custom Invoice" 
+            report_type="qweb-pdf"
+            name="techsaga_crm.report_invoice"  
+            file="techsaga_crm.report_invoice"/> 
+            
+     <report 
+            id="report_account_invoices_crm"
+            model="account.invoice"
+            string="Custom Product Invoice" 
+            report_type="qweb-pdf"
+            name="techsaga_crm.report_invoice_crm"  
+            file="techsaga_crm.report_invoice_crm"/>
+      <report 
+            id="report_sale_quote_tech"
+            string="Custom Estimates"
+            model="sale.order" 
+            report_type="qweb-pdf"
+            file="techsaga_crm.report_quote_tech" 
+            name="techsaga_crm.report_salequote_tech"/>           	
+     </data>
+</openerp>

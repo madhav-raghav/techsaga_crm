@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		<template id="report_quote">
+			<t t-foreach="docs" t-as="o">
+				<div class="header">
+					<div class="row">
+						<table width="100%" cellpadding="1" cellspacing="5">
+							<tbody class="sale_tbody">
+								<tr>
+									<td style="padding-left: 0.1cm; padding-right: 0cm; width:65%">
+										<span t-field="o.company_id.name"/>
+									</td>
+									
+									<td style="padding-left: 0.1cm; padding-right: 0cm">
+										<h4 align="right">
+											<b>
+												Estimate
+												<![CDATA[&nbsp;&nbsp;]]>
+											</b>
+										</h4>
+									</td>
+									<td style="padding: 0.1cm; margin-left:100px">
+										<h4 align="left">
+											<b>
+												<span t-field="o.name"/>
+											</b>
+										</h4>
+									</td>
+								</tr>
+								<tr>
+									<td rowspan="6"  style="padding-left: 0.1cm; padding-right: 0cm">
+										<img t-if="o.company_id.logo" t-att-src="'data:image/png;base64,%s' % o.company_id.logo"
+											style="max-height:100px;"/>
+									</td>
+									<td style="padding-left: 0.1cm; padding-right: 0cm" align="right">
+										<b>From</b>
+										<![CDATA[&nbsp;&nbsp;]]>
+									</td>
+									<td  style="padding-left: 0.1cm; padding-right: 0.1cm">
+										<b>
+											<span t-field="o.company_id.name" align="left"/>
+										</b>
+									</td>
+								</tr>
+								<tr>
+									<td rowspan="4" style="padding-left: 0.1cm; padding-right: 0cm">
+									</td>
+									<td style="padding-left: 0.1cm; padding-right: 0.1cm">
+										<span t-field="o.company_id.partner_id.phone"/>
+									</td>
+								</tr>
+								<tr>
+									<td style="padding-left: 0.1cm; padding-right: 0.1cm">
+										<span t-field="o.company_id.partner_id.website"/>
+									</td>
+								</tr>
+								<tr>
+									<td style="padding-left: 0.1cm; padding-right: 0.1cm">
+										<span t-field="o.company_id.partner_id.street"/>
+										<span t-field="o.company_id.partner_id.street2"/>
+									</td>
+								</tr>
+								<tr>
+									<td  style="padding-left: 0.1cm; padding-right: 0.1cm">
+										<span t-field="o.company_id.partner_id.city"/>
+										-
+										<span t-field="o.company_id.partner_id.zip"/>
+									</td>
+								</tr>
+								<tr>
+									<td style="padding-left: 0.1cm; padding-right: 0cm" align="right">Client Phone:</td>
+									<td  style="padding-left: 0.1cm; padding-right: 0.1cm">
+										<span t-field="o.partner_id.phone" align="left"/>
+									</td>
+								</tr>
+								<tr>
+									<td rowspan="5" style="padding-left: 0.1cm; padding-right: 0cm" align="left">
+										Bill to:
+										<br/>
+										<span t-field="o.partner_id.name" align="left"/>
+										<br/>
+										<span t-field="o.partner_id.street" align="left"/>
+										<br/>
+										<span t-field="o.partner_id.street2" align="left" />
+										<span t-field="o.partner_id.city" align="left"/>
+										<span t-field="o.partner_id.state_id" align="left"/>
+										<span t-field="o.partner_id.zip" align="left"/>
+										<br/>
+										<span t-field="o.partner_id.country_id" align="left"/>
+									</td>
+								</tr>
+								<tr>
+									<td style="padding-left: 0.1cm; padding-right: 0cm" align="right">
+										Sent On:
+										<![CDATA[&nbsp;&nbsp;]]>
+									</td>
+									<td  style="padding-left: 0.1cm; padding-right: 0.1cm">
+										<span t-field="o.date_order"   align="left"/>
+									</td>
+								</tr>
+								<tr>
+									<td style="padding-left: 0.1cm; padding-right: 0cm" align="right">
+										Sales Rep:
+										<![CDATA[&nbsp;&nbsp;]]>
+									</td>
+									<td  style="padding-left: 0.1cm; padding-right: 0.1cm">
+										<span t-field="o.user_id.name" align="left"/>
+									</td>
+								</tr>
+								<tr>
+									<td style="padding-left: 0.1cm; padding-right: 0cm" align="right">
+										Mobile:
+										<![CDATA[&nbsp;&nbsp;]]>
+									</td>
+									<td  style="padding-left: 0.1cm; padding-right: 0.1cm">
+										<span t-field="o.user_id.mobile" align="left"/>
+									</td>
+								</tr>
+								<tr>
+									<td style="padding-left: 0.1cm; padding-right: 0cm" align="right">
+										Phone:
+										<![CDATA[&nbsp;&nbsp;]]>
+										<br/>
+										Email:
+										<![CDATA[&nbsp;&nbsp;]]>
+									</td>
+									<td  style="padding-left: 0.1cm; padding-right: 0.1cm">
+										<span t-field="o.user_id.phone" align="left"/>
+										<br/>
+										<span t-field="o.user_id.email" align="left"/>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<div class="page">
+					<div class="oe_structure"/>
+					<div class="row">
+						<br/>
+						<br/>
+						<br/>
+						<br/>
+						<br/>
+						<br/>
+						<br/>
+						<br/>
+						<br/>
+						<table>
+							<tr>
+								<td rowspan="5" style="padding-left: 0.1cm; padding-right: 0cm" align="left">
+									Ship To:
+									<br/>
+									<span t-field="o.ref_id.name" align="left"/>
+									<br/>
+									<span t-field="o.ref_id.street" align="left"/>
+									<br/>
+									<span t-field="o.ref_id.street2" align="left" />
+									<span t-field="o.ref_id.city" align="left"/>
+									<span t-field="o.ref_id.state_id" align="left"/>
+									<span t-field="o.ref_id.zip" align="left"/>
+									<br/>
+									<span t-field="o.ref_id.country_id" align="left"/>
+								</td>
+							</tr>
+						</table>
+						<br/>
+						<br/>
+						<br/>
+						<table  class="table table-condensed">
+							<thead>
+								<tr style="background-color:black; color:white">
+									<td>Service/product</td>
+									<td>Decription</td>
+									<td class="text-right">Qty</td>
+									<td class="text-right">Taxes</td>
+									<td class="text-right">Unit Cost</td>
+									<td class="text-right">Total</td>
+								</tr>
+							</thead>
+							<tbody class="sale_tbody">
+								<tr t-foreach="o.order_line" t-as="l">
+									<td>
+										<span t-field="l.product_id.name"/>
+									</td>
+									<td>
+										<span t-field="l.name"/>
+										<t t-if="l_index==0">
+											New Construction or Remodel:
+											<span t-field="o.remodel"/>
+											<br/>
+											Size:
+											<span t-field="o.door_width"/>
+											<span t-if="o.door_width">
+											</span>
+											x
+											<span t-field="o.door_height"/>
+											<br/>
+											Shape:
+											<span t-field="o.shape"/>
+											<br/>
+											Stock or Custom:
+											<span t-field="o.stock_custom"/>
+											<br/>
+											Swing:
+											<span t-field="o.swing"/>
+											<br/>
+											Active door:
+											<span t-field="o.adoor"/>
+											<br/>
+											Bore:
+											<span t-field="o.bore"/>
+											<br/>
+											Mount:
+											<span t-field="o.inst_mount"/>
+											<br/>
+											Jamb:
+											<span t-field="o.jamb"/>
+											<br/>
+											Glass:
+											<span t-field="o.glass"/>
+											<br/>
+											Color:
+											<span t-field="o.color"/>
+											<br/>
+											Operable Glass:
+											<span t-field="o.o_glass"/>
+											<br/>
+											Notes:
+											<span t-field="o.descip"/>
+											<br/>
+											Thresold:
+											<span t-field="o.thresold"/>
+											<br/>
+											Tint:
+											<span t-field="o.tint"/>
+											<br/>
+											Builder:
+											<span t-field="o.builder"/>
+											<br/>
+											<!-- Impact Or Non-Impact :	<span t-field="o.impact"/><br/>-->
+											
+										</t>
+									</td>
+									<td class="text-right">
+										<span t-esc="get_qty(l.product_uom_qty)"/>
+										<!--<span groups="product.group_uom" t-field="l.product_uom"/>-->
+									</td>
+									<td class="text-right">
+										<span t-esc="', '.join(map(lambda x: x.name, l.tax_id))"/>
+									</td>
+									<td class="text-right">
+										<span t-field="l.price_unit"/>
+									</td>
+									<td class="text-right">
+										<span t-field="l.price_subtotal" t-field-options='{"widget": "monetary", "display_currency":
+											"o.pricelist_id.currency_id"}'/>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+						<br/>
+						<div class="col-xs-4 pull-right">
+							<table class="table table-condensed">
+								<tr class="border-black">
+									<td>
+										<strong>Total Without Taxes</strong>
+									</td>
+									<td class="text-right">
+										<span t-field="o.amount_untaxed" t-field-options='{"widget": "monetary", "display_currency":
+											"o.pricelist_id.currency_id"}'/>
+									</td>
+								</tr>
+								<tr>
+									<td>Taxes</td>
+									<td class="text-right">
+										<span t-field="o.amount_tax" t-field-options='{"widget": "monetary", "display_currency":
+											"o.pricelist_id.currency_id"}'/>
+									</td>
+								</tr>
+								<tr class="border-black">
+									<td>
+										<strong>Total</strong>
+									</td>
+									<td class="text-right">
+										<span t-field="o.amount_total" t-field-options='{"widget": "monetary", "display_currency":
+											"o.pricelist_id.currency_id"}'/>
+									</td>
+								</tr>
+							</table>
+						</div>
+					</div>
+					<br/>
+					<br/>
+					<p t-if="o.note">
+						<strong>Terms &amp; Conditions :</strong>
+						<span t-field="o.note"/>
+					</p>
+				</div>
+			</t>
+		</template>
+		<!--<template id="report_salequote"> <t t-call="report.html_container"> <t t-foreach="doc_ids"
+			t-as="doc_id"> <t t-raw="translate_doc(doc_id, doc_model, 'partner_id.lang', 'techsaga_crm.report_salequote_document')"/>
+			</t> </t> </template> -->
+	</data>
+</openerp>
