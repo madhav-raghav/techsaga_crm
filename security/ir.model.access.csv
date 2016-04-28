@@ -1,3 +1,3 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_sale_estimate_line,sale.estimate.line,model_sale_estimate_line,base.group_user,1,1,1,1
-access_crm_lead_line,crm.lead.line,model_crm_lead_line,base.group_user,1,1,1,1
+access_sale_estimate_line,sale.estimate.line,model_sale_estimate_line,group_estimate_lines,1,1,1,1
+access_crm_lead_line,crm.lead.line,model_crm_lead_line,group_estimate_lines,1,1,1,1

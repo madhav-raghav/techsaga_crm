@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data noupdate="0">
+
+    <record model="res.groups" id="group_estimate_lines">
+        <field name="name">Tech Crm</field>
+    </record>
+
+</data>
+</openerp>

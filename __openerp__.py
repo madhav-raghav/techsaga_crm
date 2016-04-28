@@ -32,6 +32,7 @@ Create crm line documents.
     'author': 'Techsaga Infosystems Pvt Ltd',
     'depends': ['base','crm','purchase','sale','account',],
     'data': [
+             'security/security_view.xml',
              'security/ir.model.access.csv',
              'views/report_invoice.xml',
              'views/account_invoice_report.xml',
