@@ -182,6 +182,9 @@
                                     <td t-if="l.rate_cal=='hardware'">
                                         <span t-field="l.name"/><br/>
                                     </td>
+                                    <td t-if="not l.rate_cal">
+                                        <span t-field="l.name"/><br/>
+                                    </td>
                                 <td>
                                     <span t-field="l.quantity"/>
                                     <span t-field="l.uos_id"  groups="product.group_uom"/>
