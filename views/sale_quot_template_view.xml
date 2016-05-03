@@ -196,7 +196,7 @@
                               <table style="width:180%; height:30%;">
                                 <tr>
                                 <td class="text-left">
-                                <b>Notes:</b>  <span t-field="o.descip"/><br/>
+                                <b>Notes:</b>  <span t-field="o.note"/><br/>
                                 </td>
                                 </tr>
                               </table>     

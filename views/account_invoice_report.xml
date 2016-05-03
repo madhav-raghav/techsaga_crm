@@ -211,9 +211,9 @@
                               <table style="width:180%; height:30%;">
                         
                                 <tbody class="invoice_tbody">
-                                    <tr t-foreach="o.invoice_line" t-as="l">
+                                    <tr >
                                         <td>
-                                            <b>Notes:</b><span t-field="l.estimate_id.descip"/><br/>                                                
+                                            <b>Notes:</b><span t-field="o.comment"/><br/>                                                
                                         </td>                               
                                     </tr>
                                                     
