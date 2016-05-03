@@ -136,7 +136,7 @@
                                     <td t-if="l.rate_cal=='DOOR1'">
                                         New Construction or Remodel: <span t-field="l.estimate_id.remodel"/><br/>
                                         Design: <br/>
-                                        Size: <span t-field="l.estimate_id.door_width"/><span t-if="l.estimate_id.door_width">*</span><span t-field="l.estimate_id.door_height"/><br/>
+                                        Size: <span t-field="l.estimate_id.door_width"/><span t-if="l.estimate_id.door_width">x</span><span t-field="l.estimate_id.door_height"/><br/>
                                         Shape: <span t-field="l.estimate_id.shape"/><br/>
                                         Stock or Custom:<span t-field="l.estimate_id.stock_custom"/><br/>
                                         Custom Swing: <span t-field="l.estimate_id.swing"/><br/>
@@ -151,7 +151,7 @@
                                     <td t-if="l.rate_cal=='DOOR2'">
                                         New Construction or Remodel: <span t-field="l.estimate_id.remodel"/><br/>
                                         Design: <br/>
-                                        Size: <span t-field="l.estimate_id.door_width"/><span t-if="l.estimate_id.door_width">*</span><span t-field="l.estimate_id.door_height"/><br/>
+                                        Size: <span t-field="l.estimate_id.door_width"/><span t-if="l.estimate_id.door_width">x</span><span t-field="l.estimate_id.door_height"/><br/>
                                         Shape: <span t-field="l.estimate_id.shape"/><br/>
                                         Stock or Custom:<span t-field="l.estimate_id.stock_custom"/><br/>
                                         Custom Swing: <span t-field="l.estimate_id.swing"/><br/>
@@ -165,19 +165,19 @@
                                     </td>
                                     <td t-if="l.rate_cal=='TRANSOM1'">
                                         Transom Arch: <span t-field="l.estimate_id.trans_arch"/><br/>
-                                        Size: <span t-field="l.estimate_id.trans_width"/><span t-if="l.estimate_id.trans_width">*</span><span t-field="l.estimate_id.trans_height"/><br/>
+                                        Size: <span t-field="l.estimate_id.trans_width"/><span t-if="l.estimate_id.trans_width">x</span><span t-field="l.estimate_id.trans_height"/><br/>
                                     </td>
                                     <td t-if="l.rate_cal=='TRANSOM2'">
                                         Transom Arch: <span t-field="l.estimate_id.trans_arch"/><br/>
-                                        Size: <span t-field="l.estimate_id.trans_width"/><span t-if="l.estimate_id.trans_width">*</span><span t-field="l.estimate_id.trans_height"/><br/>
+                                        Size: <span t-field="l.estimate_id.trans_width"/><span t-if="l.estimate_id.trans_width">x</span><span t-field="l.estimate_id.trans_height"/><br/>
                                     </td>
                                     <td t-if="l.rate_cal=='SIDELIGHT1'">
                                         Transom Arch: <span t-field="l.estimate_id.side_arch"/><br/>
-                                        Size: <span t-field="l.estimate_id.side_width"/><span t-if="l.estimate_id.side_width">*</span><span t-field="l.estimate_id.side_height"/><br/>
+                                        Size: <span t-field="l.estimate_id.side_width"/><span t-if="l.estimate_id.side_width">x</span><span t-field="l.estimate_id.side_height"/><br/>
                                     </td>
                                     <td t-if="l.rate_cal=='SIDELIGHT2'">
                                         Sidelight Arch: <span t-field="l.estimate_id.side_arch"/><br/>
-                                        Size: <span t-field="l.estimate_id.side_width"/><span t-if="l.estimate_id.side_width">*</span><span t-field="l.estimate_id.side_height"/><br/>
+                                        Size: <span t-field="l.estimate_id.side_width"/><span t-if="l.estimate_id.side_width">x</span><span t-field="l.estimate_id.side_height"/><br/>
                                     </td>
                                     <td t-if="l.rate_cal=='hardware'">
                                         <span t-field="l.name"/><br/>
