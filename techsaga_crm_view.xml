@@ -922,7 +922,9 @@
             <field name="email_to">${object.cad_partner_email}</field>
             <field name="subject">CAD Request</field>
             <field name="body_html"><![CDATA[  
-		    
+		    <p>Salesperson: 
+		    	${object.user_id.name}
+            </p>
 		    <p>Name : 
 		    	${object.name}
             </p>

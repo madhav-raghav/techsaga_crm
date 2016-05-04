@@ -361,7 +361,7 @@ class sale_order(osv.osv):
         '''
         assert len(ids) == 1, 'This option should only be used for a single id at a time'
         self.signal_workflow(cr, uid, ids, 'quotation_sent')
-        return self.pool['report'].get_action(cr, uid, ids, 'techsaga_crm.report_salequote', context=context)
+        return self.pool['report'].get_action(cr, uid, ids, 'techsaga_crm.report_salequote_tech', context=context)
     
     def action_quotation_send(self, cr, uid, ids, context=None):
         '''
