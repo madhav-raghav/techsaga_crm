@@ -124,7 +124,7 @@
                                    </td>
                                    <td t-if="l.rate_cal=='DOOR1'">
                                         New Construction or Remodel: <span t-field="l.estimate_ids.remodel"/><br/>
-                                        Design: <br/>
+                                        Note: <span t-field="l.estimate_ids.descip"/><br/>
                                         Size: <span t-field="l.estimate_ids.door_width"/><span t-if="l.estimate_ids.door_width">x</span><span t-field="l.estimate_ids.door_height"/><br/>
                                         Shape: <span t-field="l.estimate_ids.shape"/><br/>
                                         Stock or Custom:<span t-field="l.estimate_ids.stock_custom"/><br/>
@@ -135,11 +135,12 @@
                                         Jamb: <span t-if="l.estimate_ids.jamb in ['Other']"><span t-field="l.estimate_ids.new_jamb"/></span><span t-if="l.estimate_ids.jamb in ['6 inch','8 inch']"><span t-field="l.estimate_ids.jamb"/></span><br/>
                                         Glass: <span t-field="l.estimate_ids.glass"/><br/>
                                         Color: <span t-field="l.estimate_ids.color"/><br/>
+                                        Thresold: <span t-field="l.estimate_ids.thresold"/><br/> 
                                         Operable Glass: <span t-if="l.estimate_ids.o_glass">Yes</span> <span t-if=" not l.estimate_ids.o_glass">No</span><br/>
                                     </td>
                                     <td t-if="l.rate_cal=='DOOR2'">
                                         New Construction or Remodel: <span t-field="l.estimate_ids.remodel"/><br/>
-                                        Design: <br/>
+                                        Note: <span t-field="l.estimate_ids.descip"/><br/>
                                         Size: <span t-field="l.estimate_ids.door_width"/><span t-if="l.estimate_ids.door_width">x</span><span t-field="l.estimate_ids.door_height"/><br/>
                                         Shape: <span t-field="l.estimate_ids.shape"/><br/>
                                         Stock or Custom:<span t-field="l.estimate_ids.stock_custom"/><br/>
@@ -150,6 +151,7 @@
                                         Jamb: <span t-if="l.estimate_ids.jamb in ['Other']"><span t-field="l.estimate_ids.new_jamb"/></span><span t-if="l.estimate_ids.jamb in ['6 inch','8 inch']"><span t-field="l.estimate_ids.jamb"/></span><br/>
                                         Glass: <span t-field="l.estimate_ids.glass"/><br/>
                                         Color: <span t-field="l.estimate_ids.color"/><br/>
+                                        Thresold: <span t-field="l.estimate_ids.thresold"/><br/>
                                         Operable Glass: <span t-if="l.estimate_ids.o_glass">Yes</span> <span t-if=" not l.estimate_ids.o_glass">No</span><br/>
                                     </td>
                                     <td t-if="l.rate_cal=='TRANSOM1'">
