@@ -58,23 +58,13 @@
                                     </tr>
                                     <tr>
                                         <td rowspan="5" style="padding-left: 0.1cm; padding-right: 0cm" align="left">
-                                            <span t-field="o.partner_id.name" align="left"/>
+                                            Customer Address:<br/><span t-field="o.partner_id.name" align="left"/>
                                             <br/><span t-field="o.partner_id.street" align="left"/>
                                             <br/><span t-field="o.partner_id.street2" align="left" />
                                             <span t-field="o.partner_id.city" align="left"/>
                                             <span t-field="o.partner_id.state_id" align="left"/>                                            
                                             <span t-field="o.partner_id.zip" align="left"/>
                                         </td>
-                                        <t t-if="o.partner_invoice_id" >
-	                                        <td rowspan="5" style="padding-left: 0.1cm; padding-right: 0cm" align="center">
-	                                            <span t-field="o.partner_invoice_id.name" align="left"/>
-	                                            <br/><span t-field="o.partner_invoice_id.street" align="left"/>
-	                                            <br/><span t-field="o.partner_invoice_id.street2" align="left" />
-	                                            <span t-field="o.partner_invoice_id.city" align="left"/>
-	                                            <span t-field="o.partner_invoice_id.state_id" align="left"/>                                            
-	                                            <span t-field="o.partner_invoice_id.zip" align="left"/>
-	                                        </td>
-                                        </t>
                                     </tr>
                                     <tr> 
                                         <td style="padding-left: 0.1cm; padding-right: 0cm" align="right">Sent On:<![CDATA[&nbsp;&nbsp;]]></td>
@@ -100,6 +90,20 @@
                                             <span t-field="o.partner_id.email" align="left"/>
                                         </td>
                                     </tr>
+                                    <t t-if="o.partner_invoice_id" >
+                                    <tr>
+                                        <td rowspan="5" style="padding-left: 0.1cm; padding-right: 0cm" align="left">
+                                            Invoice Address: <br/><span t-field="o.partner_invoice_id.name" align="left"/>
+                                            <br/><span t-field="o.partner_invoice_id.street" align="left"/>
+                                            <br/><span t-field="o.partner_invoice_id.street2" align="left" />
+                                            <span t-field="o.partner_invoice_id.city" align="left"/>
+                                            <span t-field="o.partner_invoice_id.state_id" align="left"/>                                            
+                                            <span t-field="o.partner_invoice_id.zip" align="left"/>
+                                        </td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                  </t>
                             </tbody>
                         </table>
                     </div>  
