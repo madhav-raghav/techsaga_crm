@@ -42,7 +42,7 @@ class account_invoice(osv.Model):#(models.Model):
         cr.execute("select descip from sale_order")
         assert len(ids) == 1, 'This option should only be used for a single id at a time.'
         #self.sent = True
-        return self.pool['report'].get_action(cr, uid, ids, 'techsaga_crm.report_invoice', context=context)
+        return self.pool['report'].get_action(cr, uid, ids, 'techsaga_crm.report_invoice_crm', context=context)
        
     def action_invoice_sent(self,cr,uid,ids,context=None):
         """ Open a window to compose an email, with the edi invoice template
